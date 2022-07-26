@@ -30,6 +30,8 @@ namespace RestaurantAPI.WebApi
 
                     await DefaultRoles.SeedAsync(userManager, roleManager);
                     await DefaultAdministratorUser.SeedAsync(userManager, roleManager);
+                    await DefaultSuperAdminUser.SeedAsync(userManager, roleManager);
+                    await DefaultWaiterUser.SeedAsync(userManager, roleManager);
                 }
                 catch (Exception ex)
                 {

@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace RestaurantAPI.Infrastructure.Identity.Seeds
 {
-    public class DefaultAdministratorUser
+    public class DefaultWaiterUser
     {
         public static async Task SeedAsync(UserManager<RestaurantUsers> userManager, RoleManager<IdentityRole> roleManager)
         {
-            RestaurantUsers adminUser = new() {
-                UserName = "DefaultAdmin",
-                Name = "Jean",
+            RestaurantUsers WaiterUser = new() {
+                UserName = "DefaultWaiter",
+                Name = "Waiter Jean",
                 LastName = "Reyes",
-                Email = "jreyes@restaurantapi.com.do",
+                Email = "waiter@restaurantapi.com.do",
                 Documents = "402-0000000-4",
                 EmailConfirmed = true,
                 PhoneNumber="+1 809 935 0913",
@@ -25,15 +25,15 @@ namespace RestaurantAPI.Infrastructure.Identity.Seeds
             };
 
 
-            if (userManager.Users.All(u=>u.Id!=adminUser.Id))
+            if (userManager.Users.All(u=>u.Id!=WaiterUser.Id))
             {
-                var user = await userManager.FindByEmailAsync(adminUser.Email);
+                var user = await userManager.FindByEmailAsync(WaiterUser.Email);
 
                 if (user==null)
                 {
-                    await userManager.CreateAsync(adminUser,"P@ssw0rd");
+                    await userManager.CreateAsync(WaiterUser,"P@ssw0rd");
 
-                    await userManager.AddToRoleAsync(adminUser,Roles.ADMINISTRATOR.ToString());
+                    await userManager.AddToRoleAsync(WaiterUser,Roles.WAITER.ToString());
                 }
             }
             

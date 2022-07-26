@@ -9,6 +9,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RestaurantAPI.Core.Domain.Settings;
+using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 
 namespace RestaurantAPI.Infrastructure.Identity.Services
 {
@@ -17,12 +23,15 @@ namespace RestaurantAPI.Infrastructure.Identity.Services
 
         private readonly UserManager<RestaurantUsers> _userManager;
         private readonly SignInManager<RestaurantUsers> _signInManager;
+        private readonly JWTSettings _jWTSettings;
 
-
-        public AccountServices(UserManager<RestaurantUsers> userManager, SignInManager<RestaurantUsers> signInManager)
+        public AccountServices(UserManager<RestaurantUsers> userManager, 
+            SignInManager<RestaurantUsers> signInManager, 
+            IOptions<JWTSettings> jWTSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _jWTSettings = jWTSettings.Value;
         }
 
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
@@ -55,6 +64,8 @@ namespace RestaurantAPI.Infrastructure.Identity.Services
                 return response;
             }
 
+            JwtSecurityToken jwtSecurityToken = await GenerateJWToken(user);
+
             response.Id = user.Id;
             response.FirstName = user.Name;
             response.LastName = user.LastName;
@@ -67,6 +78,11 @@ namespace RestaurantAPI.Infrastructure.Identity.Services
 
             response.Roles = RoleList.ToList();
             response.IsVerified = user.EmailConfirmed;
+            response.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+
+            var generateRefreshToken = GenerateRefreshToken();
+
+            response.RefreshToken = generateRefreshToken.Token;
 
             return response;
         }
@@ -104,5 +120,71 @@ namespace RestaurantAPI.Infrastructure.Identity.Services
             await _signInManager.SignOutAsync();
         }
 
+        #region Private Methods
+
+        private async Task<JwtSecurityToken> GenerateJWToken(RestaurantUsers user) { 
+        
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var roleClaim = new List<Claim>();
+
+            foreach (string roles in userRoles)
+            {
+                roleClaim.Add(new("roles", roles));
+            }
+
+            var claims = new[] {
+                new Claim(JwtRegisteredClaimNames.Sub,user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email,user.Email),
+                new Claim("uid",user.Id),
+
+            }
+            .Union(userClaims)
+            .Union(roleClaim);
+
+
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jWTSettings.Key));
+
+            var signInCredentials = new SigningCredentials(symmetricSecurityKey,SecurityAlgorithms.HmacSha256);
+
+            var jwtSecurityToken = new JwtSecurityToken(
+                issuer: _jWTSettings.Issuer,
+                audience: _jWTSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(_jWTSettings.DurationInMinutes),
+                signingCredentials: signInCredentials
+                );
+
+            return jwtSecurityToken;
+
+        }
+
+        private RefreshToken GenerateRefreshToken() {
+
+            return new() {
+
+                Token= RandomTokenString(),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+
+            
+            };
+        
+        }
+
+        private string RandomTokenString() {
+
+            using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
+
+            var randomBytes = new byte[40];
+
+            rngCryptoServiceProvider.GetBytes(randomBytes);
+
+            return BitConverter.ToString(randomBytes).Replace("-", "");
+        }
+
+        #endregion
     }
 }

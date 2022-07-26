@@ -3,6 +3,7 @@ using RestaurantAPI.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RestaurantAPI.Infrastructure.Persistence.Repositories;
 
 namespace RestaurantAPI.Infrastructure.Persistence
 {

@@ -13,6 +13,7 @@ namespace RestaurantAPI.Infrastructure.Identity.Seeds
     {
         public static async Task SeedAsync(UserManager<RestaurantUsers> userManager,RoleManager<IdentityRole> roleManager)
         {
+            await roleManager.CreateAsync(new(Roles.SUPERADMINISTRATOR.ToString()));
             await roleManager.CreateAsync(new(Roles.ADMINISTRATOR.ToString()));            
             await roleManager.CreateAsync(new(Roles.WAITER.ToString()));
 

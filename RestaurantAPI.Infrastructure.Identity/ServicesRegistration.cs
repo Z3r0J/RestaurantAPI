@@ -7,6 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using RestaurantAPI.Core.Domain.Settings;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace RestaurantAPI.Infrastructure.Identity
 {
@@ -27,7 +32,6 @@ namespace RestaurantAPI.Infrastructure.Identity
                 options.UseSqlServer(configuration.GetConnectionString("IdentityConnection"), 
                 m => m.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)));
             }
-
             #endregion
 
             #region Identity
@@ -40,7 +44,47 @@ namespace RestaurantAPI.Infrastructure.Identity
                     options.AccessDeniedPath = "/User/AccessDenied";
                 });
 
-            service.AddAuthentication();
+            service.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
+
+            service.AddAuthentication(options => {
+
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options=>
+            {
+
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+
+                    ValidIssuer = configuration["JWTSettings:Issuer"],
+                    ValidAudience = configuration["JWTSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTSettings:Key"]))
+                };
+
+                options.Events = new JwtBearerEvents()
+                {
+                    OnAuthenticationFailed = c => {
+                        c.NoResult();
+                        c.Response.StatusCode = 500;
+                        c.Response.ContentType = "text/plain";
+                        return c.Response.WriteAsync(c.Exception.ToString());
+                    },
+
+                   OnChallenge = c => {
+
+                       return c;
+                   
+                   }
+                };
+
+            });
 
 
             #endregion

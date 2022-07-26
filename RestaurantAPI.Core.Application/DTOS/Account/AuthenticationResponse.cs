@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace RestaurantAPI.Core.Application.DTOS.Account
@@ -17,7 +18,13 @@ namespace RestaurantAPI.Core.Application.DTOS.Account
         public string Phone { get; set; }
         public List<string> Roles { get; set; }
         public bool IsVerified { get; set; }
+        public string JWToken { get; set; }
+
         public bool HasError { get; set; }
         public string Error { get; set; }
+
+        [JsonIgnore]
+        public string RefreshToken { get; set; }
+
     }
 }

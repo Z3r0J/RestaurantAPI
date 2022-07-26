@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace RestaurantAPI.Infrastructure.Identity.Seeds
 {
-    public class DefaultAdministratorUser
+    public class DefaultSuperAdminUser
     {
         public static async Task SeedAsync(UserManager<RestaurantUsers> userManager, RoleManager<IdentityRole> roleManager)
         {
-            RestaurantUsers adminUser = new() {
-                UserName = "DefaultAdmin",
-                Name = "Jean",
+            RestaurantUsers SuperAdminUser = new() {
+                UserName = "SuperAdminUser",
+                Name = "Waiter Jean",
                 LastName = "Reyes",
-                Email = "jreyes@restaurantapi.com.do",
+                Email = "superadmin@restaurantapi.com.do",
                 Documents = "402-0000000-4",
                 EmailConfirmed = true,
                 PhoneNumber="+1 809 935 0913",
@@ -25,15 +25,17 @@ namespace RestaurantAPI.Infrastructure.Identity.Seeds
             };
 
 
-            if (userManager.Users.All(u=>u.Id!=adminUser.Id))
+            if (userManager.Users.All(u=>u.Id!=SuperAdminUser.Id))
             {
-                var user = await userManager.FindByEmailAsync(adminUser.Email);
+                var user = await userManager.FindByEmailAsync(SuperAdminUser.Email);
 
                 if (user==null)
                 {
-                    await userManager.CreateAsync(adminUser,"P@ssw0rd");
+                    await userManager.CreateAsync(SuperAdminUser,"P@ssw0rd");
 
-                    await userManager.AddToRoleAsync(adminUser,Roles.ADMINISTRATOR.ToString());
+                    await userManager.AddToRoleAsync(SuperAdminUser,Roles.SUPERADMINISTRATOR.ToString());
+                    await userManager.AddToRoleAsync(SuperAdminUser,Roles.ADMINISTRATOR.ToString());
+                    await userManager.AddToRoleAsync(SuperAdminUser,Roles.WAITER.ToString());
                 }
             }
             
