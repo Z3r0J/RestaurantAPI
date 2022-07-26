@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using RestaurantAPI.Core.Application;
 using RestaurantAPI.Infrastructure.Identity;
 using RestaurantAPI.Infrastructure.Persistence;
+using RestaurantAPI.WebApi.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,8 @@ namespace RestaurantAPI.WebApi
             services.AddPersistenceInfrastructure(Configuration);
             services.AddIdentityInfrastructure(Configuration);
             services.AddApplicationLayer();
+            services.AddSwaggerExtension();
+            services.AddApiVersioningExtension();
             services.AddHealthChecks();
 
             services.AddDistributedMemoryCache();
@@ -63,6 +66,7 @@ namespace RestaurantAPI.WebApi
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSwaggerExtension();
             app.UseHealthChecks("/health");
             app.UseSession();
 

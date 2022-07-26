@@ -10,9 +10,8 @@ namespace RestaurantAPI.Core.Domain.Entities
     public class DishIngredient : AuditableBaseEntity 
     {
         public int IngredientId { get; set; }
-        public int DishId { get; set; }
-
         public Ingredients Ingredient { get; set; }
+        public int DishId { get; set; }
         public Dish Dish { get; set; }
     }
 }

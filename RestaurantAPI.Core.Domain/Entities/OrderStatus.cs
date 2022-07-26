@@ -10,5 +10,6 @@ namespace RestaurantAPI.Core.Domain.Entities
     public class OrderStatus : AuditableBaseEntity
     {
         public string Name { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

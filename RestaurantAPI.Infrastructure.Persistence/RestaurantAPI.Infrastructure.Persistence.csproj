@@ -15,4 +15,8 @@
     <ProjectReference Include="..\RestaurantAPI.Core.Domain\RestaurantAPI.Core.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>

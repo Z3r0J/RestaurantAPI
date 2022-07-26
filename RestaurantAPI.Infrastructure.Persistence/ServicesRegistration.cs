@@ -1,6 +1,5 @@
 ﻿using RestaurantAPI.Core.Application.Interfaces.Repository;
 using RestaurantAPI.Infrastructure.Persistence.Contexts;
-using RestaurantAPI.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

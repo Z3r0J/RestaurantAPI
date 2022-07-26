@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModel\" />
+    <Folder Include="ViewModel\Ingredient\" />
   </ItemGroup>
 
 </Project>

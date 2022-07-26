@@ -9,7 +9,7 @@ namespace RestaurantAPI.Core.Domain.Entities
 {
     public class Table : AuditableBaseEntity
     {
-        public int TableMaximum { get; set; }
+        public int MaximumPeople { get; set; }
         public string Description { get; set; }
 
         public int TableStatusId { get; set; }
