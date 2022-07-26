@@ -22,7 +22,7 @@ namespace RestaurantAPI.Core.Application.Mapping
                 .ForMember(x=>x.ModifiedBy,opt=>opt.Ignore())
                 .ForMember(x=>x.DishIngredients,opt=>opt.Ignore());
 
-            CreateMap<Ingredients,IngredientViewModelSerr>()
+            CreateMap<Ingredients,IngredientViewModel>()
                 .ReverseMap()
                 .ForMember(x=>x.Created,opt=>opt.Ignore())
                 .ForMember(x=>x.CreatedBy,opt=>opt.Ignore())
