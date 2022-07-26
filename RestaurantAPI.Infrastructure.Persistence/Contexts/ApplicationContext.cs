@@ -171,12 +171,12 @@ namespace RestaurantAPI.Infrastructure.Persistence.Contexts
 
             builder.Entity<DishCategory>().HasData(new() {Id=1,Name="Entry Dish",Created=DateTime.UtcNow,CreatedBy="EF" }, 
                 new() {Id=2,Name="Main Dish", Created = DateTime.UtcNow, CreatedBy = "EF" }, 
-                new() {Id=2,Name="Dessert", Created = DateTime.UtcNow, CreatedBy = "EF" }, 
-                new() {Id=2,Name="Beverage", Created = DateTime.UtcNow, CreatedBy = "EF" });
+                new() {Id=3,Name="Dessert", Created = DateTime.UtcNow, CreatedBy = "EF" }, 
+                new() {Id=4,Name="Beverage", Created = DateTime.UtcNow, CreatedBy = "EF" });
 
             builder.Entity<TableStatus>().HasData(new() {Id=1,Name="Available",Created=DateTime.UtcNow,CreatedBy="EF" }, 
                 new() {Id=2,Name="In Process to service", Created = DateTime.UtcNow, CreatedBy = "EF" }, 
-                new() {Id=2,Name="Serviced", Created = DateTime.UtcNow, CreatedBy = "EF" });
+                new() {Id=3,Name="Serviced", Created = DateTime.UtcNow, CreatedBy = "EF" });
 
             builder.Entity<OrderStatus>().HasData(new() { Id = 1, Name = "In Process", Created = DateTime.UtcNow, CreatedBy = "EF" },
                 new() { Id = 2, Name = "Completed", Created = DateTime.UtcNow, CreatedBy = "EF" });

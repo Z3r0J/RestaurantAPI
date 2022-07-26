@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RestaurantAPI.Infrastructure.Identity.Contexts
 {
-    public class IdentityContext : IdentityDbContext<BankUsers>
+    public class IdentityContext : IdentityDbContext<RestaurantUsers>
     {
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options) { }
 
@@ -16,7 +16,7 @@ namespace RestaurantAPI.Infrastructure.Identity.Contexts
 
             builder.HasDefaultSchema("Identity");
 
-            builder.Entity<BankUsers>(entity => {
+            builder.Entity<RestaurantUsers>(entity => {
 
                 entity.ToTable(name: "Users");
                             

@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using RestaurantAPI.Core.Application.DTOS.Account;
 
 namespace RestaurantAPI.Infrastructure.Identity
 {
@@ -78,10 +80,20 @@ namespace RestaurantAPI.Infrastructure.Identity
                     },
 
                    OnChallenge = c => {
+                       c.HandleResponse();
+                       c.Response.StatusCode = 401;
+                       c.Response.ContentType = "application/json";
+                       var result = JsonConvert.SerializeObject(new JwtResponse() {HasError=true,Error="You are not authorized" });
+                       return c.Response.WriteAsync(result);
+                   },
 
-                       return c;
-                   
+                   OnForbidden = c => {
+                       c.Response.StatusCode = 403;
+                       c.Response.ContentType = "application/json";
+                       var result = JsonConvert.SerializeObject(new JwtResponse() {HasError=true,Error="You are not authorized to access this resources" });
+                       return c.Response.WriteAsync(result);
                    }
+
                 };
 
             });

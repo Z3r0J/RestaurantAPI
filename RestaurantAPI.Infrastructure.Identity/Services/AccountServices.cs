@@ -120,6 +120,87 @@ namespace RestaurantAPI.Infrastructure.Identity.Services
             await _signInManager.SignOutAsync();
         }
 
+        public async Task<RegisterResponse> RegisterWaiterAsync(RegisterRequest request) {
+
+            var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
+
+            if (userWithSameEmail !=null )
+            {
+                return new() { HasError = true, Error = $"This email {request.Email} already used." };
+            }
+            
+            var userWithSameUsername = await _userManager.FindByNameAsync(request.Username);
+
+            if (userWithSameUsername !=null )
+            {
+                return new() { HasError = true, Error = "This username has been taken." };
+            }
+
+            var user = new RestaurantUsers {
+            Email = request.Email,
+            LastName = request.LastName,
+            Name = request.Name,
+            Documents = request.Documents,
+            EmailConfirmed = true,
+            PhoneNumber = request.Phone,
+            UserName = request.Username
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, Roles.WAITER.ToString());
+            }
+            else
+            {
+                return new() { HasError=true,Error= $"An Error ocurred, please try again." };
+            }
+
+            return new() { HasError=false};
+
+        }
+        public async Task<RegisterResponse> RegisterAdministratorAsync(RegisterRequest request) {
+
+            var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
+
+            if (userWithSameEmail !=null )
+            {
+                return new() { HasError = true, Error = $"This email {request.Email} already used." };
+            }
+            
+            var userWithSameUsername = await _userManager.FindByNameAsync(request.Username);
+
+            if (userWithSameUsername !=null )
+            {
+                return new() { HasError = true, Error = "This username has been taken." };
+            }
+
+            var user = new RestaurantUsers {
+            Email = request.Email,
+            LastName = request.LastName,
+            Name = request.Name,
+            Documents = request.Documents,
+            EmailConfirmed = true,
+            PhoneNumber = request.Phone,
+            UserName = request.Username
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, Roles.ADMINISTRATOR.ToString());
+            }
+            else
+            {
+                return new() { HasError=true,Error= $"An Error ocurred, please try again." };
+            }
+
+            return new() { HasError=false};
+
+        }
+
         #region Private Methods
 
         private async Task<JwtSecurityToken> GenerateJWToken(RestaurantUsers user) { 

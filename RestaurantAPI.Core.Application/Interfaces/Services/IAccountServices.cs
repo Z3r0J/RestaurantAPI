@@ -9,5 +9,7 @@ namespace RestaurantAPI.Core.Application.Interfaces.Services
         Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request);
         Task LogOutAsync();
         Task<List<AccountResponse>> GetUsersAsync();
+        Task<RegisterResponse> RegisterWaiterAsync(RegisterRequest request);
+        Task<RegisterResponse> RegisterAdministratorAsync(RegisterRequest request);
     }
 }
