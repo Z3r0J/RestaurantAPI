@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.Core.Application.Interfaces.Services;
 using RestaurantAPI.Core.Application.ViewModel.Dish;
 using RestaurantAPI.Core.Application.ViewModel.DishIngredient;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RestaurantAPI.WebApi.Controllers.v1
@@ -14,11 +16,13 @@ namespace RestaurantAPI.WebApi.Controllers.v1
     {
         private readonly IDishServices _dishServices;
         private readonly IDishIngredientServices _dishIngredientServices;
+        private readonly IMapper _mapper;
 
-        public DishController(IDishServices dishServices,IDishIngredientServices dishIngredientServices)
+        public DishController(IDishServices dishServices,IDishIngredientServices dishIngredientServices,IMapper mapper)
         {
             _dishServices = dishServices;
             _dishIngredientServices = dishIngredientServices;
+            _mapper = mapper;
         }
 
         [HttpPost("Create")]
@@ -37,14 +41,63 @@ namespace RestaurantAPI.WebApi.Controllers.v1
 
                 var result = await _dishServices.Add(model);
 
-                foreach (int ingredientid in model.IngredientIds)
+                if (model.IngredientIds != null || model.IngredientIds.Count>0)
                 {
-                    SaveDishIngredientViewModel dishIngredient = new() {DishId=result.Id,IngredientId=ingredientid };
+                    foreach (int ingredientid in model.IngredientIds)
+                    {
+                        SaveDishIngredientViewModel dishIngredient = new() { DishId = result.Id, IngredientId = ingredientid };
 
-                    await _dishIngredientServices.Add(dishIngredient);
+                        await _dishIngredientServices.Add(dishIngredient);
+                    }
                 }
 
                 return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut("Update/{id}")]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        [ProducesResponseType(StatusCodes.Status200OK,Type =typeof(SaveDishViewModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateDishAsync(int id,SaveDishViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
+                model.Id = id;
+
+                await _dishServices.Update(model,id);
+
+                if (model.IngredientIds != null || model.IngredientIds.Count>0)
+                {
+                   var ingredient = await _dishIngredientServices.GetAllViewModel();
+
+                   var ingredientfilter = ingredient.Where(x => x.DishId == id);
+
+                    foreach (DishIngredientViewModel ingredientvm in ingredientfilter)
+                    {
+                        await _dishIngredientServices.Delete(ingredientvm.Id);
+                    }
+
+
+                    foreach (int ingredientid in model.IngredientIds)
+                    {
+                        SaveDishIngredientViewModel dishIngredient = new() { DishId = id, IngredientId = ingredientid };
+
+                        await _dishIngredientServices.Add(dishIngredient);
+                    }
+                }
+
+                return Ok(model);
             }
             catch (Exception ex)
             {

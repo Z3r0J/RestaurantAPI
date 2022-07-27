@@ -138,7 +138,7 @@ namespace RestaurantAPI.Infrastructure.Persistence.Contexts
             builder.Entity<Dish>()
                 .HasMany(x => x.OrderDishes)
                 .WithOne(x => x.Dish)
-                .HasForeignKey(x => x.OrderId);
+                .HasForeignKey(x => x.DishId);
 
             builder.Entity<Ingredients>()
                 .HasMany(x => x.DishIngredients)

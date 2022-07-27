@@ -55,6 +55,8 @@ namespace RestaurantAPI.WebApi.Controllers.v1
                     return BadRequest();
                 }
 
+                model.Id = id;
+
                 await _ingredientServices.Update(model, id);
 
                 return Ok(model);

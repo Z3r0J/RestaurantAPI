@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantAPI.Core.Application.Interfaces.Services
 {
-    public interface IDishIngredientServices :IGenericServices<SaveDishIngredientViewModel,DishIngredientViewModel,DishIngredientViewModel>
+    public interface IDishIngredientServices :IGenericServices<SaveDishIngredientViewModel,DishIngredientViewModel,DishIngredient>
     {
 
     }
