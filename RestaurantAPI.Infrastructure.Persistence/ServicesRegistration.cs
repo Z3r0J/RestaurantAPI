@@ -31,6 +31,8 @@ namespace RestaurantAPI.Infrastructure.Persistence
 
             service.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             service.AddTransient<IIngredientRepository, IngredientRepository>();
+            service.AddTransient<IDishRepository, DishRepository>();
+            service.AddTransient<IDishIngredientRepository, DishIngredientRepository>();
             #endregion
         }
 

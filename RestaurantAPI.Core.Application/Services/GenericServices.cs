@@ -32,7 +32,7 @@ namespace RestaurantAPI.Core.Application.Services
 
             entity = await _repository.AddAsync(entity);
 
-            SaveViewModel Savevm = _mapper.Map<SaveViewModel>(vm);
+            SaveViewModel Savevm = _mapper.Map<SaveViewModel>(entity);
 
             return Savevm;
         }

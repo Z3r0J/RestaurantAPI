@@ -158,7 +158,8 @@ namespace RestaurantAPI.Infrastructure.Persistence.Contexts
             builder.Entity<Order>()
                 .HasMany(x => x.OrderDishes)
                 .WithOne(x => x.Order)
-                .HasForeignKey(x => x.OrderId);
+                .HasForeignKey(x => x.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<TableStatus>()
                 .HasMany(x => x.Tables)

@@ -45,7 +45,7 @@ namespace RestaurantAPI.Infrastructure.Persistence.Repositories
 
             foreach (string property in properties)
             {
-                query.Include(property);
+               query = query.Include(property);
             }
 
             return await query.ToListAsync();
