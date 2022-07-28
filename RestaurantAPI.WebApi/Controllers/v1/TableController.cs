@@ -31,6 +31,7 @@ namespace RestaurantAPI.WebApi.Controllers.v1
                 {
                     return BadRequest();
                 }
+                model.TableStatusId = 1;
 
                 await _tableServices.Add(model);
 

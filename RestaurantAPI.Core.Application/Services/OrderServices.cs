@@ -29,5 +29,14 @@ namespace RestaurantAPI.Core.Application.Services
             return _mapper.Map<List<OrderViewModel>>(List);
         
         }
+
+        public async Task<OrderViewModel> GetByIdWithInclude(int id)
+        {
+
+            var list = await _orderRepository.GetExtensiveIncludeAsync();
+
+            return _mapper.Map<OrderViewModel>(list.FirstOrDefault(x => x.Id == id));
+
+        }
     }
 }

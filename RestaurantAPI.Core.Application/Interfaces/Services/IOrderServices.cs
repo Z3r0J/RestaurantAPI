@@ -11,5 +11,6 @@ namespace RestaurantAPI.Core.Application.Interfaces.Services
     public interface IOrderServices : IGenericServices<SaveOrderViewModel,OrderViewModel,Order>
     {
         Task<List<OrderViewModel>> GetAllViewModelWithInclude();
+        Task<OrderViewModel> GetByIdWithInclude(int id);
     }
 }
