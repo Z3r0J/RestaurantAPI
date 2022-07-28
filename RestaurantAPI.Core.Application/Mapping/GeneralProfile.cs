@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Core.Application.DTOS.Account;
 using RestaurantAPI.Core.Application.ViewModel.Dish;
 using RestaurantAPI.Core.Application.ViewModel.DishIngredient;
+using RestaurantAPI.Core.Application.ViewModel.DishOrder;
 using RestaurantAPI.Core.Application.ViewModel.Ingredient;
 using RestaurantAPI.Core.Application.ViewModel.Order;
 using RestaurantAPI.Core.Application.ViewModel.OrderStatus;
@@ -96,6 +97,17 @@ namespace RestaurantAPI.Core.Application.Mapping
                 .ForMember(x => x.CreatedBy, opt => opt.Ignore())
                 .ForMember(x => x.ModifiedBy, opt => opt.Ignore());
 
+            CreateMap<Order,SaveOrderViewModel>()
+                .ForMember(x=>x.DishIds,opt=>opt.Ignore())
+                .ReverseMap()
+                .ForMember(x => x.Created, opt => opt.Ignore())
+                .ForMember(x => x.Table, opt => opt.Ignore())
+                .ForMember(x => x.OrderDishes, opt => opt.Ignore())
+                .ForMember(x => x.OrderStatus, opt => opt.Ignore())
+                .ForMember(x => x.Modified, opt => opt.Ignore())
+                .ForMember(x => x.CreatedBy, opt => opt.Ignore())
+                .ForMember(x => x.ModifiedBy, opt => opt.Ignore());
+
             CreateMap<Table,SaveTableViewModel>()
                 .ReverseMap()
                 .ForMember(x => x.Created, opt => opt.Ignore())
@@ -109,6 +121,24 @@ namespace RestaurantAPI.Core.Application.Mapping
                 .ReverseMap()
                 .ForMember(x => x.Created, opt => opt.Ignore())
                 .ForMember(x => x.Ingredient, opt => opt.Ignore())
+                .ForMember(x => x.Dish, opt => opt.Ignore())
+                .ForMember(x => x.Modified, opt => opt.Ignore())
+                .ForMember(x => x.CreatedBy, opt => opt.Ignore())
+                .ForMember(x => x.ModifiedBy, opt => opt.Ignore());
+            
+            CreateMap<OrderDish,DishOrderViewModel>()
+                .ReverseMap()
+                .ForMember(x => x.Created, opt => opt.Ignore())
+                .ForMember(x => x.Order, opt => opt.Ignore())
+                .ForMember(x => x.Dish, opt => opt.Ignore())
+                .ForMember(x => x.Modified, opt => opt.Ignore())
+                .ForMember(x => x.CreatedBy, opt => opt.Ignore())
+                .ForMember(x => x.ModifiedBy, opt => opt.Ignore());
+            
+            CreateMap<OrderDish,SaveDishOrderViewModel>()
+                .ReverseMap()
+                .ForMember(x => x.Created, opt => opt.Ignore())
+                .ForMember(x => x.Order, opt => opt.Ignore())
                 .ForMember(x => x.Dish, opt => opt.Ignore())
                 .ForMember(x => x.Modified, opt => opt.Ignore())
                 .ForMember(x => x.CreatedBy, opt => opt.Ignore())

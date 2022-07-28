@@ -16,6 +16,7 @@ namespace RestaurantAPI.Core.Application.ViewModel.Order
         public int OrderStatusId { get; set; }
         public int TableId { get; set; }
         public List<int> DishIds { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public double SubTotal { get; set; }
     }
 }
