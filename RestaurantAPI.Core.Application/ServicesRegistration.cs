@@ -18,6 +18,7 @@ namespace RestaurantAPI.Core.Application
             service.AddTransient<IDishServices, DishServices>();
             service.AddTransient<IDishIngredientServices, DishIngredientServices>();
             service.AddTransient<ITableServices, TableServices>();
+            service.AddTransient<IDishOrderServices, DishOrderServices>();
             #endregion
 
         }
